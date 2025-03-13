@@ -1,6 +1,5 @@
 import { BeforeInsert, BeforeUpdate, Column, CreateDateColumn, Entity, PrimaryGeneratedColumn } from "typeorm";
 import { RoleEnum } from "../users.role_enum";
-import * as bcrypt from 'bcrypt';
 import { Exclude } from "class-transformer";
 
 @Entity('users')
@@ -31,16 +30,4 @@ export class User {
     @CreateDateColumn({ type: 'timestamp' })
     createdAt: Date;
 
-    @BeforeInsert()
-    @BeforeUpdate()
-    async hashPassword() {
-        if (this.password) {
-            const salt = await bcrypt.genSalt(10);
-            this.password = await bcrypt.hash(this.password, salt);
-        }
-    }
-
-    async validatePassword(plainPassword: string): Promise<boolean> {
-        return bcrypt.compare(plainPassword, this.password);
-    }
 }
