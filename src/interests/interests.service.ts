@@ -1,26 +1,39 @@
 import { Injectable } from '@nestjs/common';
 import { CreateInterestDto } from './dto/create-interest.dto';
 import { UpdateInterestDto } from './dto/update-interest.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Interest } from './entities/interest.entity';
+import { Repository } from 'typeorm';
+import { plainToInstance } from 'class-transformer';
 
 @Injectable()
 export class InterestsService {
-  create(createInterestDto: CreateInterestDto) {
-    return 'This action adds a new interest';
+  constructor(
+    @InjectRepository(Interest)
+    private interestsRepository: Repository<Interest>
+  ) {}
+
+  async create(createInterestDto: CreateInterestDto) {
+    const newInterest = this.interestsRepository.create(createInterestDto);
+    const savedInterest = this.interestsRepository.save(newInterest);
+    return plainToInstance(Interest, savedInterest);
   }
 
-  findAll() {
-    return `This action returns all interests`;
+  async findAll() {
+    const interests = plainToInstance(Interest, await this.interestsRepository.find());
+    return interests;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} interest`;
+  async findOne(id: string) {
+    const interests = plainToInstance(Interest, await this.interestsRepository.findOne({ where: { id } }));
+    return interests;
   }
 
-  update(id: number, updateInterestDto: UpdateInterestDto) {
+  async update(id: string, updateInterestDto: UpdateInterestDto) {
     return `This action updates a #${id} interest`;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} interest`;
+  async remove(id: string) {
+    await this.interestsRepository.delete(id);
   }
 }
