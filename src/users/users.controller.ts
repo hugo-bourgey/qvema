@@ -1,7 +1,10 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { AuthGuard } from '@nestjs/passport';
+import { RolesGuard } from 'src/common/decorators/guards/roles.guard';
+import { Roles } from 'src/common/decorators/roles.decorator';
 
 @Controller('users')
 export class UsersController {
@@ -30,5 +33,27 @@ export class UsersController {
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.usersService.remove(id);
+  }
+
+  // Routes pour la gestion des intérêts
+  @Post(':userId/interests/:interestId')
+  addInterestToUser(
+    @Param('userId') userId: string,
+    @Param('interestId') interestId: string,
+  ) {
+    return this.usersService.addInterestToUser(userId, interestId);
+  }
+
+  @Delete(':userId/interests/:interestId')
+  removeInterestFromUser(
+    @Param('userId') userId: string,
+    @Param('interestId') interestId: string,
+  ) {
+    return this.usersService.removeInterestFromUser(userId, interestId);
+  }
+
+  @Get(':userId/interests')
+  getUserInterests(@Param('userId') userId: string) {
+    return this.usersService.getUserInterests(userId);
   }
 }

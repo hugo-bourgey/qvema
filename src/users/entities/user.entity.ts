@@ -1,6 +1,7 @@
-import { BeforeInsert, BeforeUpdate, Column, CreateDateColumn, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { BeforeInsert, BeforeUpdate, Column, CreateDateColumn, Entity, ManyToMany, PrimaryGeneratedColumn } from "typeorm";
 import { RoleEnum } from "../users.role_enum";
 import { Exclude } from "class-transformer";
+import { Interest } from "src/interests/entities/interest.entity";
 
 @Entity('users')
 export class User {
@@ -30,4 +31,6 @@ export class User {
     @CreateDateColumn({ type: 'timestamp' })
     createdAt: Date;
 
+    @ManyToMany(() => Interest, interest => interest.users)
+    interests: Interest[];
 }
