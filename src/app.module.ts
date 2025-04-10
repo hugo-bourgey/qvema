@@ -8,6 +8,7 @@ import { ProjetsModule } from './projets/projets.module';
 import dataSource from './config/orm.config';
 import { AuthModule } from './auth/auth.module';
 import { AdminModule } from './admin/admin.module';
+import { InvestmentsModule } from './investments/investments.module';
 
 @Module({
   imports: [
@@ -16,7 +17,8 @@ import { AdminModule } from './admin/admin.module';
     InterestsModule,
     ProjetsModule,
     AuthModule,
-    AdminModule, // Ajout du module admin
+    AdminModule,
+    InvestmentsModule, // Ajout du module admin
   ],
   controllers: [AppController],
   providers: [AppService],

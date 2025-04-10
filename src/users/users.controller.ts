@@ -5,6 +5,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { AuthGuard } from '@nestjs/passport';
 import { RolesGuard } from 'src/common/decorators/guards/roles.guard';
 import { Roles } from 'src/common/decorators/roles.decorator';
+import { RoleEnum } from './users.role_enum';
 
 @Controller('users')
 export class UsersController {
@@ -15,6 +16,7 @@ export class UsersController {
     return this.usersService.create(createUserDto);
   }
 
+  @Roles(RoleEnum.ADMIN)
   @Get()
   findAll() {
     return this.usersService.findAll();
@@ -30,6 +32,7 @@ export class UsersController {
     return this.usersService.update(id, updateUserDto);
   }
 
+  @Roles(RoleEnum.ADMIN)
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.usersService.remove(id);
@@ -37,6 +40,8 @@ export class UsersController {
 
   // Routes pour la gestion des intérêts
   @Post(':userId/interests/:interestId')
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @Roles(RoleEnum.ADMIN)
   addInterestToUser(
     @Param('userId') userId: string,
     @Param('interestId') interestId: string,
@@ -45,6 +50,7 @@ export class UsersController {
   }
 
   @Delete(':userId/interests/:interestId')
+  @UseGuards(AuthGuard('jwt'))
   removeInterestFromUser(
     @Param('userId') userId: string,
     @Param('interestId') interestId: string,
@@ -53,6 +59,7 @@ export class UsersController {
   }
 
   @Get(':userId/interests')
+  @UseGuards(AuthGuard('jwt'))
   getUserInterests(@Param('userId') userId: string) {
     return this.usersService.getUserInterests(userId);
   }

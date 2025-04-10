@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Investment } from "src/investments/entities/investment.entity";
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity('projets')
 export class Projet {
@@ -18,5 +19,8 @@ export class Projet {
     category: string;
 
     @Column()
-    ownerId: string
+    ownerId: string;
+
+    @OneToMany(() => Investment, investment => investment.project)
+    investments: Investment[];
 }
